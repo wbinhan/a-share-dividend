@@ -21,21 +21,27 @@ export default function Pagination({ current, page, pages }: Props) {
   if (pages <= 1) return null;
   const href = (p: number) => `/${qs(current, { page: String(p) })}`;
   return (
-    <div className="pager">
-      {page > 1 && <Link href={href(page - 1)}>上一页</Link>}
+    <nav className="pager" aria-label="分页">
+      {page > 1 ? <Link href={href(page - 1)}>上一页</Link> : <span className="gap">上一页</span>}
       {windowPages(page, pages).map((p, i) =>
         p === "…" ? (
-          <span key={`gap${i}`}>…</span>
+          <span key={`gap${i}`} className="gap">
+            …
+          </span>
+        ) : p === page ? (
+          <span key={p} className="on" aria-current="page">
+            {p}
+          </span>
         ) : (
-          <Link key={p} href={href(p)} className={p === page ? "on" : undefined}>
+          <Link key={p} href={href(p)}>
             {p}
           </Link>
         ),
       )}
-      {page < pages && <Link href={href(page + 1)}>下一页</Link>}
-      <span>
-        共 {pages} 页
+      {page < pages ? <Link href={href(page + 1)}>下一页</Link> : <span className="gap">下一页</span>}
+      <span className="pager-info">
+        第 {page} / {pages} 页
       </span>
-    </div>
+    </nav>
   );
 }
